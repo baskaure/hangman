@@ -19,6 +19,10 @@ type Game struct {
 	ascii           string
 }
 
+func Test() {
+	fmt.Println("Test")
+}
+
 func (g *Game) Restore() error {
 	file, err := os.Open("save.txt")
 	if err != nil {
