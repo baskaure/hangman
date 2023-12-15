@@ -11,12 +11,11 @@ import (
 )
 
 type Game struct {
-	words           []string
-	motAleatoire    string
-	lettresRevelees map[int]bool
-	tentatives      int
-	positions       []int
-	ascii           string
+	Words           []string
+	MotAleatoire    string
+	LettresRevelees map[int]bool
+	Tentatives      int
+	Positions       []int
 }
 
 func (g *Game) Restore() error {
@@ -64,10 +63,10 @@ func NewGame() *Game {
 	}
 
 	return &Game{
-		words:           words,
-		motAleatoire:    motAleatoire,
-		lettresRevelees: lettresRevelees,
-		tentatives:      10,
+		Words:           words,
+		MotAleatoire:    motAleatoire,
+		LettresRevelees: lettresRevelees,
+		Tentatives:      10,
 	}
 }
 
@@ -97,8 +96,8 @@ func (g *Game) Display() {
 	gray := "\033[30m"
 
 	motAffiche := ""
-	for i, lettre := range g.motAleatoire {
-		if g.lettresRevelees[i] {
+	for i, lettre := range g.MotAleatoire {
+		if g.LettresRevelees[i] {
 			motAffiche += strings.ToUpper(string(lettre)) + " "
 		} else {
 			motAffiche += "_ "
@@ -110,7 +109,7 @@ func (g *Game) Display() {
 }
 
 func (g *Game) Play() {
-	g.positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
+	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
 	green := "\033[32m"
 	red := "\033[31m"
 	gray := "\033[30m"
@@ -118,7 +117,7 @@ func (g *Game) Play() {
 
 	var lettresSuggerees []string
 
-	for g.tentatives > 0 {
+	for g.Tentatives > 0 {
 		g.Display()
 		fmt.Print("Choose: ")
 		scanner := bufio.NewScanner(os.Stdin)
@@ -142,26 +141,26 @@ func (g *Game) Play() {
 			lettresSuggerees = append(lettresSuggerees, lettre)
 
 			lettreTrouvée := false
-			for i, lettreMot := range g.motAleatoire {
-				if lettre == string(lettreMot) && !g.lettresRevelees[i] {
-					g.lettresRevelees[i] = true
+			for i, lettreMot := range g.MotAleatoire {
+				if lettre == string(lettreMot) && !g.LettresRevelees[i] {
+					g.LettresRevelees[i] = true
 					lettreTrouvée = true
 				}
 			}
 
 			if !lettreTrouvée {
-				g.tentatives--
-				fmt.Printf("Not present in the word, %d attempts remaining\n", g.tentatives)
+				g.Tentatives--
+				fmt.Printf("Not present in the word, %d attempts remaining\n", g.Tentatives)
 				Positions := Positions(g)
 				fmt.Println(Positions)
 			}
 		} else if len(input) >= 2 {
 			mot := strings.ToUpper(input)
 
-			if mot == g.motAleatoire {
-				g.lettresRevelees = make(map[int]bool)
-				for i := range g.motAleatoire {
-					g.lettresRevelees[i] = true
+			if mot == g.MotAleatoire {
+				g.LettresRevelees = make(map[int]bool)
+				for i := range g.MotAleatoire {
+					g.LettresRevelees[i] = true
 				}
 				g.Display()
 				fmt.Printf(green + "Congrats !\n")
@@ -170,7 +169,7 @@ func (g *Game) Play() {
 				fmt.Println(gray + "---------------------------------" + reset)
 				return
 			} else {
-				g.tentatives -= 2
+				g.Tentatives -= 2
 				fmt.Printf("Incorrect word, %d attempts remaining\n", g.tentatives)
 				Positions := Positions(g)
 				fmt.Println(Positions)
@@ -180,8 +179,8 @@ func (g *Game) Play() {
 		}
 
 		motDevine := true
-		for i := range g.motAleatoire {
-			if !g.lettresRevelees[i] {
+		for i := range g.MotAleatoire {
+			if !g.LettresRevelees[i] {
 				motDevine = false
 				break
 			}
@@ -225,10 +224,10 @@ func Positions(g *Game) string {
 
 	scanner := bufio.NewScanner(file)
 	line := 0
-	if g.tentatives < len(g.positions) {
+	if g.Tentatives < len(g.Positions) {
 		for scanner.Scan() {
 			line++
-			if line > g.positions[g.tentatives] && line <= g.positions[g.tentatives]+7 {
+			if line > g.Positions[g.Tentatives] && line <= g.Positions[g.Tentatives]+7 {
 				hangmandraw += "\n" + scanner.Text()
 			}
 		}
