@@ -16,7 +16,6 @@ type Game struct {
 	lettresRevelees map[int]bool
 	tentatives      int
 	positions       []int
-	ascii           string
 }
 
 func Test() {
@@ -39,48 +38,16 @@ func (g *Game) Restore() error {
 	return nil
 }
 
-func NewGame(filePaths []string) *Game {
-	reset := "\033[0m"
-	gray := "\033[30m"
-	bold := "\033[1m"
-	yellow := "\033[33m"
-	red := "\033[31m"
-
+func NewGame() *Game {
 	rand.Seed(time.Now().Unix())
 
 	var words []string
 	var fileName string
 
-	fmt.Println(gray + "---------------------------------" + reset)
-	fmt.Println(yellow + bold + "Welcome to the hangman's game !" + reset)
-	fmt.Println(gray + "---------------------------------" + reset)
-	fmt.Println("Choose a word file :")
-	for i, path := range filePaths {
-		fmt.Printf("%d. %s\n", i+1, path)
-	}
-
-	if fileName == "" {
-		var choice int
-		fmt.Println(gray + "---------------------------------" + reset)
-		fmt.Print("Your choice : ")
-		_, err := fmt.Scanf("%d", &choice)
-		if err != nil {
-			fmt.Println(red+"Error reading input:", err)
-			os.Exit(1)
-		}
-		fmt.Println(gray + "---------------------------------" + reset)
-
-		if choice < 1 || choice > len(filePaths) {
-			fmt.Println(red + "Invalid choice. Using the default file (words.txt)." + reset)
-			fileName = "words.txt"
-		} else {
-			fileName = filePaths[choice-1]
-		}
-	}
+	fileName = "words.txt"
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		fmt.Println(red+"Error opening file:", err)
 		os.Exit(1)
 	}
 	defer file.Close()
