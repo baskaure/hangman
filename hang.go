@@ -44,7 +44,7 @@ func NewGame() *Game {
 	var words []string
 	var fileName string
 
-	fileName = "words.txt"
+	fileName = "static/words.txt"
 
 	file, err := os.Open(fileName)
 	if err != nil {
