@@ -30,25 +30,37 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func NewGame(g *Game) {
+func NewGame(filePaths []string) *Game {
 	rand.Seed(time.Now().Unix())
-
 	var words []string
 	var fileName string
 
-	fileName = "words.txt"
-
+	fmt.Println("Choose a word file :")
+	for i, path := range filePaths {
+		fmt.Printf("%d. %s\n", i+1, path)
+	}
+	if fileName == "" {
+		var choice int
+		fmt.Print("Your choice : ")
+		_, err := fmt.Scanf("%d", &choice)
+		if err != nil {
+			os.Exit(1)
+		}
+		if choice < 1 || choice > len(filePaths) {
+			fileName = "words.txt"
+		} else {
+			fileName = filePaths[choice-1]
+		}
+	}
 	file, err := os.Open(fileName)
 	if err != nil {
 		os.Exit(1)
 	}
 	defer file.Close()
-
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
 	}
-
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
 	n := len(motAleatoire)/2 - 1
 	lettresRevelees := make(map[int]bool)
@@ -56,11 +68,12 @@ func NewGame(g *Game) {
 		randIndex := rand.Intn(len(motAleatoire))
 		lettresRevelees[randIndex] = true
 	}
-
-	g.Words = words
-	g.MotAleatoire = motAleatoire
-	g.LettresRevelees = lettresRevelees
-	g.Tentatives = 10
+	return &Game{
+		Words:           words,
+		MotAleatoire:    motAleatoire,
+		LettresRevelees: lettresRevelees,
+		Tentatives:      10,
+	}
 }
 
 func (g *Game) Play() {
