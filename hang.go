@@ -35,23 +35,10 @@ func NewGame(filePaths []string) *Game {
 	var words []string
 	var fileName string
 
-	fmt.Println("Choose a word file :")
 	for i, path := range filePaths {
 		fmt.Printf("%d. %s\n", i+1, path)
 	}
-	if fileName == "" {
-		var choice int
-		fmt.Print("Your choice : ")
-		_, err := fmt.Scanf("%d", &choice)
-		if err != nil {
-			os.Exit(1)
-		}
-		if choice < 1 || choice > len(filePaths) {
-			fileName = "words.txt"
-		} else {
-			fileName = filePaths[choice-1]
-		}
-	}
+	fileName = "words.txt"
 	file, err := os.Open(fileName)
 	if err != nil {
 		os.Exit(1)
