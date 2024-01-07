@@ -30,14 +30,11 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func NewGame(filePaths []string) *Game {
+func NewGame() *Game {
 	rand.Seed(time.Now().Unix())
 	var words []string
 	var fileName string
 
-	for i, path := range filePaths {
-		fmt.Printf("%d. %s\n", i+1, path)
-	}
 	fileName = "words.txt"
 	file, err := os.Open(fileName)
 	if err != nil {
