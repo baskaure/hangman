@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"math/rand"
-	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -31,7 +30,7 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func (g *Game) NewGame() *Game {
+func NewGame() *Game {
 	rand.Seed(time.Now().Unix())
 	var words []string
 	var fileName string
@@ -61,16 +60,11 @@ func (g *Game) NewGame() *Game {
 	}
 }
 
-func (g *Game) Play(w http.ResponseWriter, r *http.Request, choice string) {
+func (g *Game) Play(choice string) {
 	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
 	g.Tentatives = 10
 
 	var lettresSuggerees []string
-
-	if choice == "STOP" || choice == "stop" {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
 
 	if len(choice) == 1 && IsLetter(choice) {
 		lettre := strings.ToUpper(choice)
