@@ -53,6 +53,7 @@ func NewGame() *Game {
 		randIndex := rand.Intn(len(motAleatoire))
 		lettresRevelees[randIndex] = true
 	}
+	fmt.Println("test")
 	return &Game{
 		Words:           words,
 		MotAleatoire:    motAleatoire,
@@ -66,7 +67,7 @@ func (g *Game) Play(w http.ResponseWriter, r *http.Request, choice string) {
 
 	var lettresSuggerees []string
 
-	if choice == "STOP" {
+	if choice == "STOP" || choice == "stop" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
