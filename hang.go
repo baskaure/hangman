@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -60,13 +61,13 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Play(choice string) {
+func (g *Game) Play(w http.ResponseWriter, r *http.Request, choice string) {
 	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
 
 	var lettresSuggerees []string
 
 	if choice == "STOP" {
-		fmt.Println("To resume the game you must --startWith save.txt")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -118,8 +119,8 @@ func (g *Game) Play(choice string) {
 		}
 	}
 	if motDevine {
-		g.Display() // Afficher le mot à deviner
-		return      // Quitter la fonction
+		g.Display()
+		return
 	}
 }
 
