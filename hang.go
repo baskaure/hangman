@@ -19,7 +19,7 @@ type Game struct {
 	LettresSuggerees []string
 }
 
-func NewGame() *Game {
+func NewGame(g *Game) {
 	rand.Seed(time.Now().Unix())
 	words := loadDictionary("words.txt")
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
@@ -29,12 +29,10 @@ func NewGame() *Game {
 		randIndex := rand.Intn(len(motAleatoire))
 		lettresRevelees[randIndex] = true
 	}
-	return &Game{
-		Words:           words,
-		MotAleatoire:    motAleatoire,
-		LettresRevelees: lettresRevelees,
-		Tentatives:      10,
-	}
+	g.Words = words
+	g.MotAleatoire = motAleatoire
+	g.LettresRevelees = lettresRevelees
+	g.Tentatives = 10
 }
 
 func Display(g *Game) {
