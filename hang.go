@@ -31,7 +31,7 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func NewGame() *Game {
+func NewGame(g *Game) {
 	rand.Seed(time.Now().Unix())
 	var words []string
 	var fileName string
@@ -53,13 +53,10 @@ func NewGame() *Game {
 		randIndex := rand.Intn(len(motAleatoire))
 		lettresRevelees[randIndex] = true
 	}
-	fmt.Println("test")
-	return &Game{
-		Words:           words,
-		MotAleatoire:    motAleatoire,
-		LettresRevelees: lettresRevelees,
-		Tentatives:      10,
-	}
+	g.Words = words
+	g.MotAleatoire = motAleatoire
+	g.LettresRevelees = lettresRevelees
+	g.Tentatives = 10
 }
 
 func (g *Game) Play(w http.ResponseWriter, r *http.Request, choice string) {
