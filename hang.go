@@ -60,82 +60,74 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Play() {
+func (g *Game) Play(choice string) {
 	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
 
 	var lettresSuggerees []string
 
-	for g.Tentatives > 0 {
-		g.Display()
-		fmt.Print("Choose: ")
-		scanner := bufio.NewScanner(os.Stdin)
-		scanner.Scan()
-		input := strings.ToUpper(scanner.Text())
+	if choice == "STOP" {
+		fmt.Println("To resume the game you must --startWith save.txt")
+		return
+	}
 
-		if input == "STOP" {
-			fmt.Println("To resume the game you must --startWith save.txt")
+	if len(choice) == 1 && IsLetter(choice) {
+		lettre := strings.ToUpper(choice)
+
+		if Contains(lettresSuggerees, lettre) {
+			fmt.Printf("You already suggested the letter '%s'. Try again.\n", lettre)
 			return
 		}
 
-		if len(input) == 1 && isLetter(input) {
-			lettre := strings.ToUpper(input)
+		lettresSuggerees = append(lettresSuggerees, lettre)
 
-			if contains(lettresSuggerees, lettre) {
-				fmt.Printf("You already suggested the letter '%s'. Try again.\n", lettre)
-				continue
+		lettreTrouvée := false
+		for i, lettreMot := range g.MotAleatoire {
+			if lettre == string(lettreMot) && !g.LettresRevelees[i] {
+				g.LettresRevelees[i] = true
+				lettreTrouvée = true
 			}
+		}
 
-			lettresSuggerees = append(lettresSuggerees, lettre)
+		if !lettreTrouvée {
+			g.Tentatives--
+			fmt.Printf("Not present in the word, %d attempts remaining\n", g.Tentatives)
+		}
+	} else if len(choice) >= 2 {
+		mot := strings.ToUpper(choice)
 
-			lettreTrouvée := false
-			for i, lettreMot := range g.MotAleatoire {
-				if lettre == string(lettreMot) && !g.LettresRevelees[i] {
-					g.LettresRevelees[i] = true
-					lettreTrouvée = true
-				}
+		if mot == g.MotAleatoire {
+			g.LettresRevelees = make(map[int]bool)
+			for i := range g.MotAleatoire {
+				g.LettresRevelees[i] = true
 			}
-
-			if !lettreTrouvée {
-				g.Tentatives--
-				fmt.Printf("Not present in the word, %d attempts remaining\n", g.Tentatives)
-			}
-		} else if len(input) >= 2 {
-			mot := strings.ToUpper(input)
-
-			if mot == g.MotAleatoire {
-				g.LettresRevelees = make(map[int]bool)
-				for i := range g.MotAleatoire {
-					g.LettresRevelees[i] = true
-				}
-				g.Display()
-				return
-			} else {
-				g.Tentatives -= 2
-				fmt.Printf("Incorrect word, %d attempts remaining\n", g.Tentatives)
-			}
+			g.Display()
+			return
 		} else {
-			fmt.Println("Invalid input. Please enter a single letter or a word of at least two characters.")
+			g.Tentatives -= 2
+			fmt.Printf("Incorrect word, %d attempts remaining\n", g.Tentatives)
 		}
+	} else {
+		fmt.Println("Invalid input. Please enter a single letter or a word of at least two characters.")
+	}
 
-		motDevine := true
-		for i := range g.MotAleatoire {
-			if !g.LettresRevelees[i] {
-				motDevine = false
-				break
-			}
+	motDevine := true
+	for i := range g.MotAleatoire {
+		if !g.LettresRevelees[i] {
+			motDevine = false
+			break
 		}
-		if motDevine {
-			g.Display() // Afficher le mot à deviner
-			return      // Quitter la fonction
-		}
+	}
+	if motDevine {
+		g.Display() // Afficher le mot à deviner
+		return      // Quitter la fonction
 	}
 }
 
-func isLetter(s string) bool {
+func IsLetter(s string) bool {
 	return len(s) == 1 && ('a' <= s[0] && s[0] <= 'z' || 'A' <= s[0] && s[0] <= 'Z')
 }
 
-func contains(liste []string, lettre string) bool {
+func Contains(liste []string, lettre string) bool {
 	for _, l := range liste {
 		if l == lettre {
 			return true
