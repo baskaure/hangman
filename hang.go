@@ -30,7 +30,7 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func NewGame() *Game {
+func (g *Game) NewGame() *Game {
 	rand.Seed(time.Now().Unix())
 	var words []string
 	var fileName string
@@ -62,7 +62,6 @@ func NewGame() *Game {
 
 func (g *Game) Play(choice string) {
 	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
-	g.Tentatives = 10
 
 	var lettresSuggerees []string
 
