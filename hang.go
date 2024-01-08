@@ -31,7 +31,7 @@ func (g *Game) Display() {
 	g.MotAffiche = motAffiche
 }
 
-func NewGame() *Game {
+func (g *Game) NewGame() *Game {
 	rand.Seed(time.Now().Unix())
 	var words []string
 	var fileName string
