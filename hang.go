@@ -63,6 +63,7 @@ func NewGame() *Game {
 
 func (g *Game) Play(w http.ResponseWriter, r *http.Request, choice string) {
 	g.Positions = []int{72, 64, 56, 48, 40, 32, 24, 16, 8, 0}
+	g.Tentatives = 10
 
 	var lettresSuggerees []string
 
