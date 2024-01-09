@@ -24,15 +24,16 @@ func NewGame(g *Game) {
 	rand.Seed(time.Now().Unix())
 	words := LoadDictionary("words.txt")
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
-	lettresRevelees := make(map[int]bool)
-	n := len(motAleatoire)/2 - 1
-	for i := 0; i < n; i++ {
-		randIndex := rand.Intn(len(motAleatoire))
-		lettresRevelees[randIndex] = true
-	}
 	g.Words = words
 	g.MotAleatoire = motAleatoire
-	g.LettresRevelees = lettresRevelees
+	g.LettresRevelees = make(map[int]bool)
+
+	initialRevealedLetters := 2
+	for i := 0; i < initialRevealedLetters; i++ {
+		randIndex := rand.Intn(len(motAleatoire))
+		g.LettresRevelees[randIndex] = true
+	}
+
 	g.Tentatives = 10
 }
 
@@ -88,6 +89,8 @@ func PlayLetter(g *Game, letter string) {
 		g.Tentatives--
 		fmt.Printf("Pas présent dans le mot, %d tentatives restantes\n", g.Tentatives)
 	}
+
+	Display(g)
 
 	if g.Tentatives < 0 {
 		os.Exit(3)
