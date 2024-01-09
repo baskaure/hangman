@@ -21,7 +21,7 @@ type Game struct {
 
 func NewGame(g *Game) {
 	rand.Seed(time.Now().Unix())
-	words := loadDictionary("words.txt")
+	words := LoadDictionary("words.txt")
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
 	lettresRevelees := make(map[int]bool)
 	n := len(motAleatoire)/2 - 1
@@ -51,17 +51,17 @@ func Display(g *Game) {
 }
 
 func Play(g *Game, choice string) {
-	if len(choice) == 1 && isLetter(choice) {
-		playLetter(g, strings.ToUpper(choice))
+	if len(choice) == 1 && IsLetter(choice) {
+		PlayLetter(g, strings.ToUpper(choice))
 	} else if len(choice) >= 2 {
-		playWord(g, strings.ToUpper(choice))
+		PlayWord(g, strings.ToUpper(choice))
 	} else {
 		fmt.Println("Entrée non valide. Veuillez entrer une lettre unique ou un mot d'au moins deux caractères.")
 	}
 }
 
-func playLetter(g *Game, letter string) {
-	if contains(g.LettresSuggerees, letter) {
+func PlayLetter(g *Game, letter string) {
+	if Contains(g.LettresSuggerees, letter) {
 		fmt.Printf("Vous avez déjà proposé la lettre '%s'. Réessayez.\n", letter)
 		return
 	}
@@ -82,7 +82,7 @@ func playLetter(g *Game, letter string) {
 	}
 }
 
-func playWord(g *Game, word string) {
+func PlayWord(g *Game, word string) {
 	if word == g.MotAleatoire {
 		for i := range g.MotAleatoire {
 			g.LettresRevelees[i] = true
@@ -95,11 +95,11 @@ func playWord(g *Game, word string) {
 	fmt.Printf("Mot incorrect, %d tentatives restantes\n", g.Tentatives)
 }
 
-func isLetter(s string) bool {
+func IsLetter(s string) bool {
 	return len(s) == 1 && ('a' <= s[0] && s[0] <= 'z' || 'A' <= s[0] && s[0] <= 'Z')
 }
 
-func contains(liste []string, lettre string) bool {
+func Contains(liste []string, lettre string) bool {
 	for _, l := range liste {
 		if l == lettre {
 			return true
@@ -108,7 +108,7 @@ func contains(liste []string, lettre string) bool {
 	return false
 }
 
-func loadDictionary(fileName string) []string {
+func LoadDictionary(fileName string) []string {
 	file, err := os.Open(fileName)
 	if err != nil {
 		os.Exit(1)
