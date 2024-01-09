@@ -80,6 +80,9 @@ func PlayLetter(g *Game, letter string) {
 		g.Tentatives--
 		fmt.Printf("Pas présent dans le mot, %d tentatives restantes\n", g.Tentatives)
 	}
+	if g.Tentatives >= 0 {
+		os.Exit(3)
+	}
 }
 
 func PlayWord(g *Game, word string) {
