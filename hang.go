@@ -17,6 +17,7 @@ type Game struct {
 	Positions        []int
 	MotAffiche       string
 	LettresSuggerees []string
+	FoundWord        int
 }
 
 func NewGame(g *Game) {
@@ -61,6 +62,7 @@ func Play(g *Game, choice string) {
 }
 
 func PlayLetter(g *Game, letter string) {
+	g.FoundWord = 0
 	if Contains(g.LettresSuggerees, letter) {
 		fmt.Printf("Vous avez déjà proposé la lettre '%s'. Réessayez.\n", letter)
 		return
@@ -82,6 +84,9 @@ func PlayLetter(g *Game, letter string) {
 	}
 	if g.Tentatives >= 0 {
 		os.Exit(3)
+	}
+	if letterFound == true {
+		g.FoundWord = 1
 	}
 }
 
