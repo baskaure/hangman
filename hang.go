@@ -85,6 +85,11 @@ func Play(g *Game, choice string) {
 }
 
 func PlayLetter(g *Game, letter string) {
+	if g.FoundWord == 1 || g.Tentatives <= 0 {
+		Reset(g)
+		return
+	}
+
 	g.FoundWord = 0
 	if Contains(g.LettresSuggerees, letter) {
 		g.Message = "Vous avez déjà proposé la lettre."
