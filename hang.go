@@ -38,10 +38,31 @@ func Reset(g *Game) {
 	Display(g)
 }
 
-func NewGame(g *Game) {
+const (
+	EasyModeFile   = "words.txt"
+	NormalModeFile = "words2.txt"
+	HardModeFile   = "words3.txt"
+)
+
+func NewGame(g *Game, mode string) {
 	rand.Seed(time.Now().Unix())
-	words := LoadDictionary("words.txt")
-	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
+
+	var words []string
+	var motAleatoire string
+
+	switch mode {
+	case "easy":
+		words = LoadDictionary(EasyModeFile)
+	case "normal":
+		words = LoadDictionary(NormalModeFile)
+	case "hard":
+		words = LoadDictionary(HardModeFile)
+	default:
+		words = LoadDictionary(EasyModeFile)
+	}
+
+	motAleatoire = strings.ToUpper(words[rand.Intn(len(words))])
+
 	g.Words = words
 	g.MotAleatoire = motAleatoire
 	g.LettresRevelees = make(map[int]bool)
