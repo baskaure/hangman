@@ -34,8 +34,6 @@ func Reset(g *Game) {
 	g.FoundWord = 0
 	g.Message = ""
 	g.MessageReveal = ""
-	NewGame(g)
-	Display(g)
 }
 
 const (
