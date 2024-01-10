@@ -2,7 +2,6 @@ package hangman
 
 import (
 	"bufio"
-	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -48,7 +47,7 @@ func Display(g *Game) {
 		}
 	}
 	g.MotAffiche = motAffiche
-	fmt.Printf("Lettres utilisées: %s\n", strings.Join(g.LettresSuggerees, ", "))
+	g.Message = strings.Join(g.LettresSuggerees, ", ")
 }
 
 func Play(g *Game, choice string) {
