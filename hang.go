@@ -16,9 +16,9 @@ type Game struct {
 	Positions        []int
 	MotAffiche       string
 	LettresSuggerees []string
-	FoundWord        int
 	Message          string
 	MessageReveal    string
+	AllLettersFound  bool
 }
 
 func Reset(g *Game) {
@@ -31,7 +31,7 @@ func Reset(g *Game) {
 
 	g.Tentatives = 10
 	g.LettresSuggerees = nil
-	g.FoundWord = 0
+	g.AllLettersFound = false
 	g.Message = ""
 	g.MessageReveal = ""
 	NewGame(g)
@@ -45,7 +45,7 @@ func NewGame(g *Game) {
 	g.Words = words
 	g.MotAleatoire = motAleatoire
 	g.LettresRevelees = make(map[int]bool)
-
+	g.AllLettersFound = false
 	initialRevealedLetters := 2
 	for i := 0; i < initialRevealedLetters; i++ {
 		randIndex := rand.Intn(len(motAleatoire))
@@ -53,7 +53,6 @@ func NewGame(g *Game) {
 	}
 
 	g.Tentatives = 10
-	g.FoundWord = 0
 }
 
 func Display(g *Game) {
@@ -80,8 +79,6 @@ func Play(g *Game, choice string) {
 }
 
 func PlayLetter(g *Game, letter string) {
-
-	g.FoundWord = 0
 	if Contains(g.LettresSuggerees, letter) {
 		g.Message = "Vous avez déjà proposé la lettre."
 		return
@@ -99,35 +96,28 @@ func PlayLetter(g *Game, letter string) {
 
 	if letterFound {
 		g.Message = "Félicitations, vous avez trouvé la lettre!"
-		g.FoundWord = 0
 	} else {
 		g.Tentatives--
 		g.Message = "Pas présent dans le mot !"
 	}
 
-	allLettersFound := true
+	g.AllLettersFound = true
 	for _, revealed := range g.LettresRevelees {
 		if !revealed {
-			allLettersFound = false
+			g.AllLettersFound = false
 			break
 		}
-	}
-
-	if allLettersFound {
-		g.FoundWord = 1
 	}
 
 	Display(g)
 }
 
 func PlayWord(g *Game, word string) {
-	g.FoundWord = 0
 
 	if word == g.MotAleatoire {
 		for i := range g.MotAleatoire {
 			g.LettresRevelees[i] = true
 		}
-		g.FoundWord = 1
 		g.Message = "Félicitations, vous avez trouvé le mot!"
 		Display(g)
 		return
@@ -136,16 +126,12 @@ func PlayWord(g *Game, word string) {
 	g.Tentatives -= 2
 	g.Message = "Mot incorrect !"
 
-	allLettersFound := true
+	g.AllLettersFound = true
 	for _, revealed := range g.LettresRevelees {
 		if !revealed {
-			allLettersFound = false
+			g.AllLettersFound = false
 			break
 		}
-	}
-
-	if allLettersFound {
-		g.FoundWord = 1
 	}
 
 	Display(g)
