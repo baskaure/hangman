@@ -18,8 +18,7 @@ type Game struct {
 	MotAffiche       string
 	LettresSuggerees []string
 	FoundWord        int
-	ExitLoose        int
-	ExitWin          int
+	Message          string
 }
 
 func NewGame(g *Game) {
@@ -49,9 +48,7 @@ func Display(g *Game) {
 		}
 	}
 	g.MotAffiche = motAffiche
-	fmt.Printf("Mot à deviner: %s\n", g.MotAffiche)
 	fmt.Printf("Lettres utilisées: %s\n", strings.Join(g.LettresSuggerees, ", "))
-	fmt.Printf("Tentatives restantes: %d\n", g.Tentatives)
 }
 
 func Play(g *Game, choice string) {
@@ -60,16 +57,14 @@ func Play(g *Game, choice string) {
 	} else if len(choice) >= 2 {
 		PlayWord(g, strings.ToUpper(choice))
 	} else {
-		fmt.Println("Entrée non valide. Veuillez entrer une lettre unique ou un mot d'au moins deux caractères.")
+		g.Message = "Entrée non valide. Veuillez entrer une lettre unique ou un mot d'au moins deux caractères."
 	}
 }
 
 func PlayLetter(g *Game, letter string) {
-	g.ExitLoose = 0
-	g.ExitWin = 0
 	g.FoundWord = 0
 	if Contains(g.LettresSuggerees, letter) {
-		fmt.Printf("Vous avez déjà proposé la lettre '%s'. Réessayez.\n", letter)
+		g.Message = "Vous avez déjà proposé la lettre."
 		return
 	}
 
@@ -91,22 +86,10 @@ func PlayLetter(g *Game, letter string) {
 
 	if !allLettersFound {
 		g.Tentatives--
-		fmt.Printf("Pas présent dans le mot, %d tentatives restantes\n", g.Tentatives)
+		g.Message = "Pas présent dans le mot !"
 	}
 
 	Display(g)
-
-	if g.Tentatives <= 0 {
-		fmt.Println("Désolé, vous avez épuisé toutes vos tentatives. Le mot était:", g.MotAleatoire)
-		g.ExitLoose = 1
-		os.Exit(3)
-	}
-
-	if g.FoundWord == 1 {
-		fmt.Println("Félicitations ! Vous avez trouvé le mot:", g.MotAleatoire)
-		g.ExitWin = 1
-		os.Exit(0)
-	}
 }
 
 func PlayWord(g *Game, word string) {
@@ -120,7 +103,7 @@ func PlayWord(g *Game, word string) {
 	}
 
 	g.Tentatives -= 2
-	fmt.Printf("Mot incorrect, %d tentatives restantes\n", g.Tentatives)
+	g.Message = "Mot incorrect !"
 }
 
 func IsLetter(s string) bool {
