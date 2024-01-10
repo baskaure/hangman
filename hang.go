@@ -110,10 +110,13 @@ func PlayLetter(g *Game, letter string) {
 
 	if allLettersFound {
 		g.FoundWord = 1
+	} else {
+		if !Contains(g.LettresSuggerees, letter) {
+			g.Tentatives--
+		}
 	}
 
 	if !allLettersFound {
-		g.Tentatives--
 		g.Message = "Pas présent dans le mot !"
 	}
 
