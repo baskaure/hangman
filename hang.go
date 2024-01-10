@@ -100,18 +100,17 @@ func PlayLetter(g *Game, letter string) {
 	if !letterFound {
 		g.Tentatives--
 		g.Message = "Pas présent dans le mot !"
-	}
-
-	allLettersFound := true
-	for _, revealed := range g.LettresRevelees {
-		if !revealed {
-			allLettersFound = false
-			break
+	} else {
+		wordFoundCount := 0
+		for _, revealed := range g.LettresRevelees {
+			if revealed {
+				wordFoundCount++
+			}
 		}
-	}
 
-	if allLettersFound && g.FoundWord == 0 {
-		g.FoundWord = 1
+		if wordFoundCount == len(g.MotAleatoire) {
+			g.FoundWord = 1
+		}
 	}
 
 	Display(g)
@@ -136,15 +135,15 @@ func PlayWord(g *Game, word string) {
 	g.Tentatives -= 2
 	g.Message = "Mot incorrect !"
 
-	allLettersFound := true
+	// Nouvelle logique pour vérifier si le mot a été trouvé
+	wordFoundCount := 0
 	for _, revealed := range g.LettresRevelees {
-		if !revealed {
-			allLettersFound = false
-			break
+		if revealed {
+			wordFoundCount++
 		}
 	}
 
-	if allLettersFound && g.FoundWord == 0 {
+	if wordFoundCount == len(g.MotAleatoire) {
 		g.FoundWord = 1
 	} else {
 		g.Tentatives--
