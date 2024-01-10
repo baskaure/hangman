@@ -19,7 +19,8 @@ type Game struct {
 	FoundWord        int
 	Message          string
 	MessageReveal    string
-	ResetPart        int
+	Win              int
+	Loose            int
 }
 
 func Reset(g *Game) {
@@ -35,12 +36,15 @@ func Reset(g *Game) {
 	g.FoundWord = 0
 	g.Message = ""
 	g.MessageReveal = ""
+	g.Win = 0
+	g.Loose = 0
 	NewGame(g)
 	Display(g)
 }
 
 func NewGame(g *Game) {
-	g.ResetPart = 0
+	g.Win = 0
+	g.Loose = 0
 	rand.Seed(time.Now().Unix())
 	words := LoadDictionary("words.txt")
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
@@ -71,12 +75,6 @@ func Display(g *Game) {
 }
 
 func Play(g *Game, choice string) {
-	if g.FoundWord == 1 || g.Tentatives <= 0 {
-		g.ResetPart = 1
-		Reset(g)
-		return
-	}
-
 	if len(choice) == 1 && IsLetter(choice) {
 		PlayLetter(g, strings.ToUpper(choice))
 	} else if len(choice) >= 2 {
@@ -116,12 +114,12 @@ func PlayLetter(g *Game, letter string) {
 
 	Display(g)
 
-	if g.Tentatives <= 0 || g.FoundWord == 1 {
-		if g.FoundWord == 1 {
-			g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
-		} else {
-			g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
-		}
+	if g.FoundWord == 1 {
+		g.Win = 1
+		Reset(g)
+	}
+	if g.Tentatives <= 0 {
+		g.Loose = 1
 		Reset(g)
 	}
 }
@@ -139,12 +137,12 @@ func PlayWord(g *Game, word string) {
 	g.Tentatives -= 2
 	g.Message = "Mot incorrect !"
 
-	if g.Tentatives <= 0 || g.FoundWord == 1 {
-		if g.FoundWord == 1 {
-			g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
-		} else {
-			g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
-		}
+	if g.FoundWord == 1 {
+		g.Win = 1
+		Reset(g)
+	}
+	if g.Tentatives <= 0 {
+		g.Loose = 1
 		Reset(g)
 	}
 }
