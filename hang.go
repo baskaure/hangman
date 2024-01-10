@@ -98,26 +98,29 @@ func PlayLetter(g *Game, letter string) {
 
 	g.LettresSuggerees = append(g.LettresSuggerees, letter)
 
-	allLettersFound := true
+	letterFound := false
 	for i, letterMot := range g.MotAleatoire {
 		if letter == string(letterMot) && !g.LettresRevelees[i] {
 			g.LettresRevelees[i] = true
+			letterFound = true
 		}
-		if !g.LettresRevelees[i] {
+	}
+
+	if !letterFound {
+		g.Tentatives--
+		g.Message = "Pas présent dans le mot !"
+	}
+
+	allLettersFound := true
+	for _, revealed := range g.LettresRevelees {
+		if !revealed {
 			allLettersFound = false
+			break
 		}
 	}
 
 	if allLettersFound {
 		g.FoundWord = 1
-	} else {
-		if !Contains(g.LettresSuggerees, letter) {
-			g.Tentatives--
-		}
-	}
-
-	if !allLettersFound {
-		g.Message = "Pas présent dans le mot !"
 	}
 
 	Display(g)
