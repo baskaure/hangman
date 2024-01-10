@@ -135,7 +135,6 @@ func PlayWord(g *Game, word string) {
 	g.Tentatives -= 2
 	g.Message = "Mot incorrect !"
 
-	// Nouvelle logique pour vérifier si le mot a été trouvé
 	wordFoundCount := 0
 	for _, revealed := range g.LettresRevelees {
 		if revealed {
@@ -145,8 +144,6 @@ func PlayWord(g *Game, word string) {
 
 	if wordFoundCount == len(g.MotAleatoire) {
 		g.FoundWord = 1
-	} else {
-		g.Tentatives--
 	}
 
 	Display(g)
