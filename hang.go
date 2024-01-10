@@ -10,27 +10,27 @@ import (
 
 type Game struct {
 	Words            []string
-	MotAleatoire     string
-	LettresRevelees  map[int]bool
-	Tentatives       int
+	RandomWord       string
+	RevealedLetters  map[int]bool
+	Tries            int
 	Positions        []int
-	MotAffiche       string
-	LettresSuggerees []string
+	DisplayedWord    string
+	SuggestedLetters []string
 	FoundWord        int
 	Message          string
 	MessageReveal    string
 }
 
 func Reset(g *Game) {
-	g.LettresRevelees = make(map[int]bool)
+	g.RevealedLetters = make(map[int]bool)
 	initialRevealedLetters := 2
 	for i := 0; i < initialRevealedLetters; i++ {
-		randIndex := rand.Intn(len(g.MotAleatoire))
-		g.LettresRevelees[randIndex] = true
+		randIndex := rand.Intn(len(g.RandomWord))
+		g.RevealedLetters[randIndex] = true
 	}
 
-	g.Tentatives = 10
-	g.LettresSuggerees = nil
+	g.Tries = 10
+	g.SuggestedLetters = nil
 	g.FoundWord = 0
 	g.Message = ""
 	g.MessageReveal = ""
@@ -46,7 +46,7 @@ func NewGame(g *Game, mode string) {
 	rand.Seed(time.Now().Unix())
 
 	var words []string
-	var motAleatoire string
+	var randomWord string
 
 	switch mode {
 	case "easy":
@@ -59,33 +59,33 @@ func NewGame(g *Game, mode string) {
 		words = LoadDictionary(EasyModeFile)
 	}
 
-	motAleatoire = strings.ToUpper(words[rand.Intn(len(words))])
+	randomWord = strings.ToUpper(words[rand.Intn(len(words))])
 
 	g.Words = words
-	g.MotAleatoire = motAleatoire
-	g.LettresRevelees = make(map[int]bool)
+	g.RandomWord = randomWord
+	g.RevealedLetters = make(map[int]bool)
 
 	initialRevealedLetters := 2
 	for i := 0; i < initialRevealedLetters; i++ {
-		randIndex := rand.Intn(len(motAleatoire))
-		g.LettresRevelees[randIndex] = true
+		randIndex := rand.Intn(len(randomWord))
+		g.RevealedLetters[randIndex] = true
 	}
 
-	g.Tentatives = 10
+	g.Tries = 10
 	g.FoundWord = 0
 }
 
 func Display(g *Game) {
-	motAffiche := ""
-	for i, lettre := range g.MotAleatoire {
-		if g.LettresRevelees[i] {
-			motAffiche += strings.ToUpper(string(lettre)) + " "
+	displayedWord := ""
+	for i, letter := range g.RandomWord {
+		if g.RevealedLetters[i] {
+			displayedWord += strings.ToUpper(string(letter)) + " "
 		} else {
-			motAffiche += "_ "
+			displayedWord += "_ "
 		}
 	}
-	g.MotAffiche = motAffiche
-	g.MessageReveal = strings.Join(g.LettresSuggerees, ", ")
+	g.DisplayedWord = displayedWord
+	g.MessageReveal = strings.Join(g.SuggestedLetters, ", ")
 }
 
 func Play(g *Game, choice string) {
@@ -94,40 +94,40 @@ func Play(g *Game, choice string) {
 	} else if len(choice) >= 2 {
 		PlayWord(g, strings.ToUpper(choice))
 	} else {
-		g.Message = "Entrée non valide. Veuillez entrer une lettre unique ou un mot d'au moins deux caractères."
+		g.Message = "Invalid input. Please enter a single letter or a word of at least two characters."
 	}
 }
 
 func PlayLetter(g *Game, letter string) {
 	g.FoundWord = 0
 
-	if Contains(g.LettresSuggerees, letter) {
-		g.Message = "Vous avez déjà proposé la lettre."
+	if Contains(g.SuggestedLetters, letter) {
+		g.Message = "You have already suggested the letter."
 		return
 	}
 
-	g.LettresSuggerees = append(g.LettresSuggerees, letter)
+	g.SuggestedLetters = append(g.SuggestedLetters, letter)
 
 	letterFound := false
-	for i, letterMot := range g.MotAleatoire {
-		if letter == string(letterMot) && !g.LettresRevelees[i] {
-			g.LettresRevelees[i] = true
+	for i, letterWord := range g.RandomWord {
+		if letter == string(letterWord) && !g.RevealedLetters[i] {
+			g.RevealedLetters[i] = true
 			letterFound = true
 		}
 	}
 
 	if !letterFound {
-		g.Tentatives--
-		g.Message = "Pas présent dans le mot !"
+		g.Tries--
+		g.Message = "Not present in the word!"
 	} else {
 		wordFoundCount := 0
-		for _, revealed := range g.LettresRevelees {
+		for _, revealed := range g.RevealedLetters {
 			if revealed {
 				wordFoundCount++
 			}
 		}
 
-		if wordFoundCount == len(g.MotAleatoire) {
+		if wordFoundCount == len(g.RandomWord) {
 			g.FoundWord = 1
 		}
 	}
@@ -136,32 +136,32 @@ func PlayLetter(g *Game, letter string) {
 }
 
 func PlayWord(g *Game, word string) {
-	if g.FoundWord == 1 || g.Tentatives <= 0 {
+	if g.FoundWord == 1 || g.Tries <= 0 {
 		Reset(g)
 		return
 	}
 
-	if word == g.MotAleatoire {
-		for i := range g.MotAleatoire {
-			g.LettresRevelees[i] = true
+	if word == g.RandomWord {
+		for i := range g.RandomWord {
+			g.RevealedLetters[i] = true
 		}
-		g.Message = "Félicitations, vous avez trouvé le mot!"
+		g.Message = "Congratulations, you found the word!"
 		Display(g)
 		g.FoundWord = 1
 		return
 	}
 
-	g.Tentatives -= 2
-	g.Message = "Mot incorrect !"
+	g.Tries -= 2
+	g.Message = "Incorrect word!"
 
 	wordFoundCount := 0
-	for _, revealed := range g.LettresRevelees {
+	for _, revealed := range g.RevealedLetters {
 		if revealed {
 			wordFoundCount++
 		}
 	}
 
-	if wordFoundCount == len(g.MotAleatoire) {
+	if wordFoundCount == len(g.RandomWord) {
 		g.FoundWord = 1
 	}
 
@@ -172,9 +172,9 @@ func IsLetter(s string) bool {
 	return len(s) == 1 && ('a' <= s[0] && s[0] <= 'z' || 'A' <= s[0] && s[0] <= 'Z')
 }
 
-func Contains(liste []string, lettre string) bool {
-	for _, l := range liste {
-		if l == lettre {
+func Contains(list []string, letter string) bool {
+	for _, l := range list {
+		if l == letter {
 			return true
 		}
 	}
