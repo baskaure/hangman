@@ -92,8 +92,14 @@ func PlayLetter(g *Game, letter string) {
 
 	Display(g)
 
-	if g.Tentatives < 0 {
+	if g.Tentatives <= 0 {
+		fmt.Println("Désolé, vous avez épuisé toutes vos tentatives. Le mot était:", g.MotAleatoire)
 		os.Exit(3)
+	}
+
+	if g.FoundWord == 1 {
+		fmt.Println("Félicitations ! Vous avez trouvé le mot:", g.MotAleatoire)
+		os.Exit(0)
 	}
 }
 
