@@ -2,6 +2,7 @@ package hangman
 
 import (
 	"bufio"
+	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -111,6 +112,7 @@ func PlayLetter(g *Game, letter string) {
 	}
 
 	if allLettersFound {
+		fmt.Println("gagné")
 		g.FoundWord = 1
 	}
 
@@ -127,9 +129,10 @@ func PlayWord(g *Game, word string) {
 		for i := range g.MotAleatoire {
 			g.LettresRevelees[i] = true
 		}
-		g.FoundWord = 1
 		g.Message = "Félicitations, vous avez trouvé le mot!"
 		Display(g)
+		fmt.Println("lol")
+		g.FoundWord = 1
 		return
 	}
 
@@ -145,6 +148,7 @@ func PlayWord(g *Game, word string) {
 	}
 
 	if allLettersFound {
+		fmt.Println("perdu")
 		g.FoundWord = 1
 	} else {
 		g.Tentatives--
