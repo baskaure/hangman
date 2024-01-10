@@ -53,6 +53,7 @@ func NewGame(g *Game) {
 	}
 
 	g.Tentatives = 10
+	g.FoundWord = 0
 }
 
 func Display(g *Game) {
@@ -128,8 +129,23 @@ func PlayWord(g *Game, word string) {
 		for i := range g.MotAleatoire {
 			g.LettresRevelees[i] = true
 		}
-		g.FoundWord = 1
-		g.Message = "Félicitations, vous avez trouvé le mot!"
+
+		allLettersFound := true
+		for _, revealed := range g.LettresRevelees {
+			if !revealed {
+				allLettersFound = false
+				break
+			}
+		}
+
+		if allLettersFound {
+			g.FoundWord = 1
+			g.Message = "Félicitations, vous avez trouvé le mot!"
+		} else {
+			g.Message = "Mot incorrect !"
+			g.Tentatives -= 2
+		}
+
 		Display(g)
 		return
 	}
