@@ -19,11 +19,10 @@ type Game struct {
 	FoundWord        int
 	Message          string
 	MessageReveal    string
-	ResetPart        bool
+	ResetPart        int
 }
 
 func Reset(g *Game) {
-	g.ResetPart = true
 	g.LettresRevelees = make(map[int]bool)
 	initialRevealedLetters := 2
 	for i := 0; i < initialRevealedLetters; i++ {
@@ -41,7 +40,7 @@ func Reset(g *Game) {
 }
 
 func NewGame(g *Game) {
-	g.ResetPart = false
+	g.ResetPart = 0
 	rand.Seed(time.Now().Unix())
 	words := LoadDictionary("words.txt")
 	motAleatoire := strings.ToUpper(words[rand.Intn(len(words))])
@@ -72,6 +71,12 @@ func Display(g *Game) {
 }
 
 func Play(g *Game, choice string) {
+	if g.FoundWord == 1 || g.Tentatives <= 0 {
+		g.ResetPart = 1
+		Reset(g)
+		return
+	}
+
 	if len(choice) == 1 && IsLetter(choice) {
 		PlayLetter(g, strings.ToUpper(choice))
 	} else if len(choice) >= 2 {
