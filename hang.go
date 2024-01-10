@@ -22,6 +22,8 @@ type Game struct {
 }
 
 func Reset(g *Game) {
+	g.FoundWord = 1
+	g.Tentatives = 0
 	g.LettresRevelees = make(map[int]bool)
 	initialRevealedLetters := 2
 	for i := 0; i < initialRevealedLetters; i++ {
