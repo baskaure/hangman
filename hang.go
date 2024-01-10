@@ -18,6 +18,7 @@ type Game struct {
 	LettresSuggerees []string
 	FoundWord        int
 	Message          string
+	MessageReveal    string
 }
 
 func NewGame(g *Game) {
@@ -47,7 +48,7 @@ func Display(g *Game) {
 		}
 	}
 	g.MotAffiche = motAffiche
-	g.Message = strings.Join(g.LettresSuggerees, ", ")
+	g.MessageReveal = strings.Join(g.LettresSuggerees, ", ")
 }
 
 func Play(g *Game, choice string) {
