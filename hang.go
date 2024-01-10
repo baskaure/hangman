@@ -21,6 +21,21 @@ type Game struct {
 	MessageReveal    string
 }
 
+func Reset(g *Game) {
+	g.LettresRevelees = make(map[int]bool)
+	initialRevealedLetters := 2
+	for i := 0; i < initialRevealedLetters; i++ {
+		randIndex := rand.Intn(len(g.MotAleatoire))
+		g.LettresRevelees[randIndex] = true
+	}
+
+	g.Tentatives = 10
+	g.LettresSuggerees = nil
+	g.FoundWord = 0
+	g.Message = ""
+	g.MessageReveal = ""
+}
+
 func NewGame(g *Game) {
 	rand.Seed(time.Now().Unix())
 	words := LoadDictionary("words.txt")
@@ -90,6 +105,15 @@ func PlayLetter(g *Game, letter string) {
 	}
 
 	Display(g)
+
+	if g.Tentatives <= 0 || g.FoundWord == 1 {
+		if g.FoundWord == 1 {
+			g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
+		} else {
+			g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
+		}
+		Reset(g)
+	}
 }
 
 func PlayWord(g *Game, word string) {
@@ -104,6 +128,15 @@ func PlayWord(g *Game, word string) {
 
 	g.Tentatives -= 2
 	g.Message = "Mot incorrect !"
+
+	if g.Tentatives <= 0 || g.FoundWord == 1 {
+		if g.FoundWord == 1 {
+			g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
+		} else {
+			g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
+		}
+		Reset(g)
+	}
 }
 
 func IsLetter(s string) bool {
