@@ -122,12 +122,12 @@ func PlayLetter(g *Game, letter string) {
 	if g.FoundWord == 1 {
 		g.Win = 1
 		g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
-		Reset(g)
+		//Reset(g)
 	}
 	if g.Tentatives <= 0 {
 		g.Loose = 1
 		g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
-		Reset(g)
+		//Reset(g)
 	}
 }
 
@@ -147,12 +147,12 @@ func PlayWord(g *Game, word string) {
 	if g.FoundWord == 1 {
 		g.Win = 1
 		g.Message = "Félicitations ! Vous avez trouvé le mot: " + g.MotAleatoire
-		Reset(g)
+		//Reset(g)
 	}
 	if g.Tentatives <= 0 {
 		g.Loose = 1
 		g.Message = "Désolé, vous avez épuisé toutes vos tentatives. Le mot était: " + g.MotAleatoire
-		Reset(g)
+		//Reset(g)
 	}
 }
 
