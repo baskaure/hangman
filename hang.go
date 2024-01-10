@@ -106,7 +106,9 @@ func PlayLetter(g *Game, letter string) {
 		}
 	}
 
-	if !letterFound {
+	if letterFound {
+		g.Message = "Félicitations, vous avez trouvé la lettre!"
+	} else {
 		g.Tentatives--
 		g.Message = "Pas présent dans le mot !"
 	}
