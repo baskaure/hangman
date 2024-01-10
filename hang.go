@@ -2,7 +2,6 @@ package hangman
 
 import (
 	"bufio"
-	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -81,8 +80,8 @@ func Play(g *Game, choice string) {
 }
 
 func PlayLetter(g *Game, letter string) {
-
 	g.FoundWord = 0
+
 	if Contains(g.LettresSuggerees, letter) {
 		g.Message = "Vous avez déjà proposé la lettre."
 		return
@@ -111,8 +110,7 @@ func PlayLetter(g *Game, letter string) {
 		}
 	}
 
-	if allLettersFound {
-		fmt.Println("gagné")
+	if allLettersFound && g.FoundWord == 0 {
 		g.FoundWord = 1
 	}
 
@@ -131,7 +129,6 @@ func PlayWord(g *Game, word string) {
 		}
 		g.Message = "Félicitations, vous avez trouvé le mot!"
 		Display(g)
-		fmt.Println("lol")
 		g.FoundWord = 1
 		return
 	}
@@ -147,8 +144,7 @@ func PlayWord(g *Game, word string) {
 		}
 	}
 
-	if allLettersFound {
-		fmt.Println("perdu")
+	if allLettersFound && g.FoundWord == 0 {
 		g.FoundWord = 1
 	} else {
 		g.Tentatives--
